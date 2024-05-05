@@ -1,0 +1,28 @@
+const Web3 = require('web3');
+
+// 连接到以太坊节点（例如，Infura、Alchemy）
+const web3 = new Web3('https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID');
+
+// 发送者地址和私钥
+const senderAddress = '0xYourSenderAddress';
+const privateKey = 'YOUR_PRIVATE_KEY';
+
+// 接收者地址和发送金额
+const recipientAddress = '0xRecipientAddress';
+const amountInWei = web3.utils.toWei('0.1', 'ether');  // 发送 0.1 ETH
+
+// 构建交易
+const transaction = {
+    from: senderAddress,
+    to: recipientAddress,
+    value: amountInWei,
+    gas: 21000,  // Gas 限额
+    gasPrice: web3.utils.toWei('10', 'gwei'),  // Gas 价格
+    nonce: await web3.eth.getTransactionCount(senderAddress),  // 获取 nonce
+};
+
+// 签名并发送交易
+const signedTx = await web3.eth.accounts.signTransaction(transaction, privateKey);
+const txHash = await web3.eth.sendRawTransaction(signedTx.rawTransaction);
+
+console.log('交易成功，交易哈希:', txHash);
