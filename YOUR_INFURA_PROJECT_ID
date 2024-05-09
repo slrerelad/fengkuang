@@ -1,0 +1,15 @@
+from web3 import Web3
+
+# 连接到以太坊节点
+w3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID'))
+
+# 账户地址
+account_address = '0xYourAccountAddress'
+
+# 查询账户余额
+balance = w3.eth.get_balance(account_address)
+
+# 将余额转换为以太单位
+balance_in_eth = w3.fromWei(balance, 'ether')
+
+print(f'账户 {account_address} 的余额为 {balance_in_eth} ETH')
