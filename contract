@@ -1,0 +1,40 @@
+from web3 import Web3
+from eth_account import Account
+
+# 连接到以太坊节点
+w3 = Web3(Web3.HTTPProvider('https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID'))
+
+# 加载智能合约 ABI
+with open('MintableToken.json') as f:
+    contract_abi = json.load(f)['abi']
+
+# 合约地址
+contract_address = '0xYourContractAddress'
+
+# 发送者地址和私钥
+sender_address = '0xYourSenderAddress'
+private_key = '0xYourPrivateKey'
+
+# 创建 web3.py 合约实例
+contract = w3.eth.contract(address=contract_address, abi=contract_abi)
+
+# 执行批量 mint 操作
+def batch_mint(recipients, amounts):
+    for recipient, amount in zip(recipients, amounts):
+        nonce = w3.eth.getTransactionCount(sender_address)
+        tx = contract.functions.mint(recipient, amount).buildTransaction({
+            'chainId': w3.eth.chainId,
+            'gas': 2000000,
+            'gasPrice': w3.toWei('100', 'gwei'),
+            'nonce': nonce,
+        })
+        signed_tx = w3.eth.account.signTransaction(tx, private_key)
+        tx_hash = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
+        print(f"Minted {amount} tokens to {recipient}. Transaction hash: {tx_hash.hex()}")
+
+# 批量 mint 的接收者地址和数量
+recipients = ['0xRecipientAddress1', '0xRecipientAddress2', '0xRecipientAddress3']
+amounts = [100, 200, 300]
+
+# 执行批量 mint 操作
+batch_mint(recipients, amounts)
