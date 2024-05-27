@@ -1,0 +1,22 @@
+const Web3 = require('web3');
+
+const web3 = new Web3('https://optimism-mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID');
+
+const contractABI = [...];  // 合约的 ABI
+const contractAddress = '0xYourContractAddress';  // 合约地址
+
+const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+// 设置存储数据
+contract.methods.set(42).send({ from: '0xYourAddress' }).then((receipt) => {
+    console.log('存储数据成功:', receipt);
+}).catch((error) => {
+    console.error('调用合约出错:', error);
+});
+
+// 获取存储数据
+contract.methods.get().call().then((result) => {
+    console.log('获取存储数据:', result);
+}).catch((error) => {
+    console.error('获取数据出错:', error);
+});
